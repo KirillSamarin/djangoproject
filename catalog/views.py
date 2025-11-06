@@ -1,16 +1,15 @@
-from django.shortcuts import render
 from catalog.models import Product
+from django.views.generic import ListView, TemplateView, DetailView
+
+class Home(ListView):
+    model = Product
+    template_name = 'catalog/home.html'
+    context_object_name = 'products'
 
 
-def home(request):
-    products = Product.objects.all()
-    context = {"products": products}
-    return render(request, 'catalog/home.html', context)
+class Contacts(TemplateView):
+    template_name = 'catalog/contacts.html'
 
-def contacts(request):
-    return render(request, 'catalog/contacts.html')
-
-def product(request, product_id):
-    product = Product.objects.get(id=product_id)
-    context = {"product": product}
-    return render(request, 'catalog/product.html', context)
+class ProductDetail(DetailView):
+    model = Product
+    template_name = 'catalog/product.html'

@@ -1,0 +1,25 @@
+{% extends 'blogs/base.html' %}
+
+{% block title %}Список статей{% endblock %}
+
+{% block content %}
+<h1>Все статьи</h1>
+{% for article in articles %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="card-title">
+                <a href="{% url 'blogs:article-detail' article.pk %}">{{ article.title }}</a>
+            </h2>
+            {% if article.thumbnail %}
+                <img src="{{ article.thumbnail.url }}" alt="{{ article.title }}" class="img-fluid mb-3" style="max-width: 300px;">
+            {% endif %}
+            <p class="card-text">
+                <small class="text-muted">Опубликовано: {{ article.created_at|date:"d.m.Y H:i" }}</small><br>
+                <small class="text-muted">Просмотров: {{ article.count_watches }}</small>
+            </p>
+        </div>
+    </div>
+{% empty %}
+    <div class="alert alert-info">Статьи не найдены.</div>
+{% endfor %}
+{% endblock %}
