@@ -22,6 +22,7 @@
 
 <div class="mt-4">
     <a href="{% url 'blogs:article-edit' article.pk %}" class="btn btn-warning">Редактировать</a>
+    <a href="{% url 'blogs:article-delete' article.pk %}" class="btn btn-danger">Удалить</a>
     <a href="{% url 'blogs:articles' %}" class="btn btn-secondary">Назад к списку статей</a>
 </div>
 {% endblock %}

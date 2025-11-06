@@ -1,7 +1,13 @@
 from django.urls import reverse_lazy
 
 from blogs.models import Article
-from django.views.generic import DetailView, ListView, UpdateView
+from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView
+
+class ArticleCreateView(CreateView):
+    model = Article
+    template_name = 'blogs/article_form.html'
+    fields = ['title', 'content', 'thumbnail', 'is_published']
+    success_url = reverse_lazy('blogs:articles')
 
 class ArticleView(DetailView):
     model = Article
@@ -30,3 +36,8 @@ class ArticleUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('blogs:article-detail', kwargs={"pk": self.object.pk})
+
+class ArticleDeleteView(DeleteView):
+    model = Article
+    template_name = 'blogs/article_confirm_delete.html'
+    success_url = reverse_lazy('blogs:articles')

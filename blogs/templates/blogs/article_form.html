@@ -1,0 +1,15 @@
+{% extends 'blogs/base.html' %}
+
+{% block title %}Создание новой статьи{% endblock %}
+
+{% block content %}
+<h1>Создание новой статьи</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="mt-3">
+        <button type="submit" class="btn btn-success">Создать статью</button>
+        <a href="{% url 'blogs:articles' %}" class="btn btn-secondary">Отмена</a>
+    </div>
+</form>
+{% endblock %}
