@@ -23,7 +23,7 @@ class ProductForm(forms.ModelForm):
         })
 
         self.fields['category'].widget.attrs.update({
-            'class': 'select-option',
+            'class': 'form-select',
             'placeholder': 'Выберите категорию продукта'
         })
 
