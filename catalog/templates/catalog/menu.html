@@ -1,4 +1,14 @@
 <nav class="ms-5">
     <a class="p-2 btn btn-outline-primary" href="/catalog/home/">Каталог</a>
     <a class="p-2 btn btn-outline-primary" href="/catalog/contacts/">Контакты</a>
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="p-2 btn btn-outline-primary">Выйти</button>
+    </form>
+    <p>Добро пожаловать</p>
+    {% else %}
+    <a class="p-2 btn btn-outline-primary" href="/users/login/">Войти</a>
+    <a class="p-2 btn btn-outline-primary" href="/users/register/">Регистрация</a>
+    {% endif %}
 </nav>
