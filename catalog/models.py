@@ -19,6 +19,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to="photos/", verbose_name="изображение")
     category = models.ForeignKey(Category, verbose_name="категория", on_delete=models.CASCADE, related_name="products")
     price = models.IntegerField(verbose_name="цена за покупку")
+    is_published = models.BooleanField(default=False, verbose_name='опубликовано')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="дата последнего изменения")
 

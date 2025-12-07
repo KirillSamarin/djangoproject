@@ -32,4 +32,5 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name = "пользователь"
         verbose_name_plural = "пользователи"
+        permissions = [("can_unpublish_product", "может отменять публикацию продукта")]
 
