@@ -24,9 +24,16 @@
                     <p><strong>Цена:</strong> {{ product.price }} руб.</p>
                     <p><strong>Категория:</strong> {{ product.category }}</p>
                     <div class="mt-4">
+                        {% if user == product.owner %}
                         <a href="{% url 'catalog:product-update' product.pk %}" class="btn btn-warning">Редактировать</a>
+                        {% endif %}
+                        {% if user == product.owner or perms.catalog.delete_product %}
                         <a href="{% url 'catalog:product-delete' product.pk %}" class="btn btn-danger">Удалить</a>
+                        {% endif %}
                         <a href="{% url 'catalog:home' %}" class="btn btn-secondary">Назад к списку продуктов</a>
+                        {% if perms.catalog.can_unpublish_product %}
+                            <a href="{% url 'catalog:product-unpublish' product.pk %}" class="btn btn-danger">Отменить публикацию</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
