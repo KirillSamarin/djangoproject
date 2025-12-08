@@ -7,7 +7,8 @@ banned_words = ['казино', 'криптовалюта', 'крипта', 'б�
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'category', 'price']
+        fields = ['name', 'description', 'image', 'category', 'price']
+        exclude = ['owner', 'created_at', 'updated_at', 'is_published']
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
@@ -20,6 +21,11 @@ class ProductForm(forms.ModelForm):
         self.fields['description'].widget.attrs.update({
             'class': 'form-control',
             'placeholder': 'Введите описание продукта'
+        })
+
+        self.fields['image'].widget.attrs.update({
+            'class': 'file-selector-button',
+            'placeholder': 'Выберите файл'
         })
 
         self.fields['category'].widget.attrs.update({
@@ -38,16 +44,17 @@ class ProductForm(forms.ModelForm):
         for word in banned_words:
             if word in name:
                 raise ValidationError(f'Запрещенные слова: {", ".join(banned_words)}')
-            return name
+        return name
 
     def clean_desc(self):
         desc = self.cleaned_data.get('description')
         for word in banned_words:
             if word in desc:
                 raise ValidationError(f'Запрещенное слова: {", ".join(banned_words)}')
-            return desc
+        return desc
 
     def clean_price(self):
         price = self.cleaned_data.get('price')
         if price < 0:
             raise ValidationError('Цена не может быть меньше нуля')
+        return price
