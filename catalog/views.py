@@ -1,11 +1,37 @@
-from django.contrib.messages.api import success
 from django.urls import reverse_lazy
-from catalog.models import Product
+from django.core.cache import cache
+from .models import Product, Category
 from django.views.generic import ListView, TemplateView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponseForbidden
 from .forms import ProductForm
+from .services import get_products_by_category
+
+class ListProductsCategory(ListView):
+    model = Product
+    template_name = 'catalog/products_by_category.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        category_name = self.kwargs.get('category_name')
+
+        if not category_name:
+            return Product.objects.filter(is_published=True)
+
+        if self.request.user.groups.filter(name='Managers').exists():
+            category = get_object_or_404(Category, name=category_name)
+            return Product.objects.filter(category=category)
+
+        return get_products_by_category(category_name)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category_name = self.kwargs.get('category_name', 'Все продукты')
+        context['category_name'] = category_name
+        context['page_title'] = f'Категория: {category_name}'
+        return context
+
 
 class Home(ListView):
     model = Product
@@ -13,9 +39,19 @@ class Home(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        if self.request.user.groups.filter(name='Managers').exists():
+        user = self.request.user
+
+        if user.groups.filter(name='Managers').exists():
             return Product.objects.all()
-        return Product.objects.filter(is_published=True)
+
+        cache_key = 'public_published_products'
+        queryset = cache.get(cache_key)
+
+        if queryset is None:
+            queryset = Product.objects.filter(is_published=True)
+            cache.set(cache_key, queryset, 60 * 15)
+
+        return queryset
 
 class Contacts(TemplateView):
     template_name = 'catalog/contacts.html'
